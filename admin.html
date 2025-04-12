@@ -63,6 +63,7 @@
 
       snapshot.forEach(doc => {
         const data = doc.data();
+        if (!data.confirmCode || !data.raktaros) return; // ha hiányos, kihagyjuk
         const key = data.confirmCode + "|" + data.raktaros;
         if (!logs[key]) logs[key] = [];
         logs[key].push(data);
