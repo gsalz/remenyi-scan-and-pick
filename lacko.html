@@ -101,6 +101,10 @@
       font-size: 1rem;
     }
   </style>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
 </head>
 <body>
   <header>
@@ -170,6 +174,15 @@
         itemList.push({ confirmCode: currentCode, barcode, quantity });
       }
 
+      
+      db.collection("komissiozas").add({
+        barcode,
+        quantity,
+        confirmCode: currentCode,
+        raktaros,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    
       renderList();
       document.getElementById("barcodeInput").value = "";
       document.getElementById("quantity").value = 1;
@@ -196,6 +209,15 @@
       confirmation.innerHTML = "✅ Komissió lezárva<br>📦 Visszaigazolás: <strong>" + currentCode + "</strong>";
 
       itemList.length = 0;
+      
+      db.collection("komissiozas").add({
+        barcode,
+        quantity,
+        confirmCode: currentCode,
+        raktaros,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    
       renderList();
       currentCode = "";
       document.getElementById("confirmCode").value = "";
