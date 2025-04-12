@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reményi Scan & Pick - Demo</title>
+  <title>Reményi Scan & Pick</title>
   <link rel="manifest" href="manifest.json">
   <script>
     if ('serviceWorker' in navigator) {
@@ -16,96 +16,104 @@
       box-sizing: border-box;
     }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-      color: #000;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 1rem;
+      padding: 0;
+      background-color: #f7f7f7;
+      color: #222;
     }
     header {
       background-color: #fff;
-      border-bottom: 2px solid #ccc;
-      padding: 1rem 0;
+      padding: 1rem;
       text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-    .logo {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #d10000;
+    header img {
+      height: 50px;
     }
-    h2 {
-      margin-top: 2rem;
-      font-size: 1.5rem;
-      border-left: 5px solid #d10000;
-      padding-left: 0.5rem;
-    }
-    .scan-section, .list-section {
-      margin: 2rem auto;
+    .container {
       max-width: 500px;
-      background: #f9f9f9;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      text-align: center;
+      color: #d10000;
+      font-size: 1.8rem;
+      margin-top: 0.5rem;
     }
     label {
+      font-weight: 600;
       display: block;
-      margin: 1rem 0 0.5rem;
-      font-weight: bold;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
     }
     input[type="text"],
     input[type="number"] {
       width: 100%;
       padding: 0.75rem;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 5px;
     }
-    .btn {
+    button {
       width: 100%;
-      padding: 1rem;
+      padding: 0.9rem;
       margin-top: 1.5rem;
+      font-size: 1.1rem;
       background-color: #d10000;
-      color: white;
-      font-size: 1.2rem;
+      color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
     }
-    .btn:hover {
-      background-color: #a60000;
+    button:hover {
+      background-color: #a70000;
     }
     .item-list {
-      margin-top: 1rem;
+      margin-top: 2rem;
     }
     .item {
-      padding: 1rem;
       background-color: #fff;
       border: 1px solid #ddd;
-      border-radius: 5px;
-      margin-bottom: 0.75rem;
-      font-size: 1.1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .footer-img {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .footer-img img {
+      width: 120px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">Reményi Scan & Pick</div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Rem%C3%A9nyi_logo_k%C3%B6r.png/240px-Rem%C3%A9nyi_logo_k%C3%B6r.png" alt="Reményi logó">
+    <h1>Scan & Pick</h1>
   </header>
 
-  <section class="scan-section">
-    <h2>Vonalkód beolvasása</h2>
+  <div class="container">
     <label for="barcodeInput">Szkennelt vonalkód:</label>
     <input type="text" id="barcodeInput" placeholder="Szkennelt vonalkód..." autofocus>
+
     <label for="quantity">Mennyiség:</label>
     <input type="number" id="quantity" value="1" min="1">
-    <button class="btn" onclick="addItem()">Hozzáadás a listához</button>
-  </section>
 
-  <section class="list-section">
-    <h2>Komissiózott tételek</h2>
-    <div id="itemList" class="item-list"></div>
-    <button class="btn" onclick="finishPicking()">Komissió lezárása</button>
-  </section>
+    <button onclick="addItem()">Hozzáadás a listához</button>
+
+    <div class="item-list" id="itemList"></div>
+
+    <button onclick="finishPicking()">Komissió lezárása</button>
+
+    <div class="footer-img">
+      <img src="https://i.imgur.com/Fh5n3eu.png" alt="Raklap + béka">
+    </div>
+  </div>
 
   <script>
     const itemList = [];
