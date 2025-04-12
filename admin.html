@@ -4,37 +4,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin – Összes komissió</title>
+  <title>Admin – Komissiók</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      background: #f2f2f2;
+      color: #333;
       padding: 1rem;
-      background: #f8f8f8;
-      color: #222;
     }
     h1 {
       text-align: center;
       color: #b00000;
+      margin-bottom: 2rem;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1.5rem;
-      background: #fff;
+    .card {
+      background: white;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 0.75rem;
-      text-align: left;
+    .card-header {
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    th {
-      background-color: #eee;
+    .details {
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .details.visible {
+      display: block;
+    }
+    .item {
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid #b00000;
     }
   </style>
 </head>
 <body>
-  <h1>Admin nézet – összes komissió</h1>
-  <p>(Ez a nézet a Firebase alapú változatban fog valós időben frissülni.)</p>
-  <p>Itt később látható lesz: név, visszaigazolás, vonalkód, mennyiség, időpont.</p>
+  <h1>Komissiók – Admin</h1>
+  <div id="logContainer"></div>
+
+  <script>
+    const container = document.getElementById("logContainer");
+
+    db.collection("komissiozas").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+      container.innerHTML = "";
+      const logs = {};
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const key = data.confirmCode + "|" + data.raktaros;
+        if (!logs[key]) logs[key] = [];
+        logs[key].push(data);
+      });
+
+      Object.entries(logs).forEach(([key, items], index) => {
+        const [confirmCode, raktaros] = key.split("|");
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        header.innerHTML = `<span>${confirmCode} – ${raktaros}</span><span>➕</span>`;
+
+        const detail = document.createElement("div");
+        detail.className = "details";
+        items.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.textContent = `${item.barcode} – ${item.quantity} db`;
+          detail.appendChild(div);
+        });
+
+        header.addEventListener("click", () => {
+          detail.classList.toggle("visible");
+          header.querySelector("span:last-child").textContent = detail.classList.contains("visible") ? "▼" : "➕";
+        });
+
+        card.appendChild(header);
+        card.appendChild(detail);
+        container.appendChild(card);
+      });
+    });
+  </script>
 </body>
 </html>
