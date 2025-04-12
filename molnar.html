@@ -175,15 +175,22 @@
       }
 
       
-      db.collection("komissiozas").add({
-        barcode,
-        quantity,
-        confirmCode: currentCode,
-        raktaros,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      try {
+        db.collection("komissiozas").add({
+          barcode,
+          quantity,
+          confirmCode: currentCode,
+          raktaros,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          renderList();
+        }).catch((error) => {
+          alert("Hiba a mentéskor: " + error.message);
+        });
+      } catch (e) {
+        alert("Mentési hiba: " + e.message);
+      }
     
-      renderList();
       document.getElementById("barcodeInput").value = "";
       document.getElementById("quantity").value = 1;
       document.getElementById("barcodeInput").focus();
@@ -210,15 +217,22 @@
 
       itemList.length = 0;
       
-      db.collection("komissiozas").add({
-        barcode,
-        quantity,
-        confirmCode: currentCode,
-        raktaros,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      try {
+        db.collection("komissiozas").add({
+          barcode,
+          quantity,
+          confirmCode: currentCode,
+          raktaros,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          renderList();
+        }).catch((error) => {
+          alert("Hiba a mentéskor: " + error.message);
+        });
+      } catch (e) {
+        alert("Mentési hiba: " + e.message);
+      }
     
-      renderList();
       currentCode = "";
       document.getElementById("confirmCode").value = "";
       document.getElementById("confirmCode").readOnly = false;
