@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lackó István – Reményi Scan & Pick</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: #fff;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    header img {
+      height: 60px;
+    }
+    h1 {
+      margin: 0.5rem 0 0;
+      color: #c00000;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 0.3rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    input[readonly] {
+      background-color: #eee;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1.2rem;
+      font-size: 1.1rem;
+      background: #d10000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #a00000;
+    }
+    .item-list {
+      margin-top: 1.5rem;
+    }
+    .item {
+      background: #f9f9f9;
+      padding: 0.8rem;
+      border-left: 4px solid #d10000;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="icon-192.png" alt="Reményi logó" />
+    <h1>Scan & Pick – Lackó István</h1>
+  </header>
+
+  <div class="container">
+    <label for="confirmCode">Visszaigazolási szám:</label>
+    <input type="text" id="confirmCode" placeholder="Szkenneld vagy írd be" />
+
+    <label for="barcodeInput">Termék vonalkód:</label>
+    <input type="text" id="barcodeInput" placeholder="Szkennelt vonalkód..." disabled />
+
+    <label for="quantity">Mennyiség:</label>
+    <input type="number" id="quantity" value="1" min="1" disabled />
+
+    <button class="btn" onclick="addItem()" disabled id="addBtn">Tétel hozzáadása</button>
+
+    <div class="item-list" id="itemList"></div>
+
+    <button class="btn" onclick="finishPicking()" disabled id="finishBtn">Komissió lezárása</button>
+  </div>
+
+  <script>
+    const raktaros = "Lackó István";
+    const itemList = [];
+    let currentCode = "";
+
+    document.getElementById("confirmCode").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        currentCode = this.value.trim();
+        if (currentCode) {
+          this.readOnly = true;
+          enableInputs();
+        }
+      }
+    });
+
+    document.getElementById("barcodeInput").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") addItem();
+    });
+
+    function enableInputs() {
+      document.getElementById("barcodeInput").disabled = false;
+      document.getElementById("quantity").disabled = false;
+      document.getElementById("addBtn").disabled = false;
+      document.getElementById("finishBtn").disabled = false;
+      document.getElementById("barcodeInput").focus();
+    }
+
+    function addItem() {
+      const barcode = document.getElementById("barcodeInput").value.trim();
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!barcode || quantity < 1) {
+        alert("Kérlek adj meg vonalkódot és mennyiséget.");
+        return;
+      }
+
+      const existing = itemList.find(i => i.barcode === barcode && i.confirmCode === currentCode);
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        itemList.push({ raktaros, confirmCode: currentCode, barcode, quantity });
+      }
+
+      renderList();
+      document.getElementById("barcodeInput").value = "";
+      document.getElementById("quantity").value = 1;
+      document.getElementById("barcodeInput").focus();
+    }
+
+    function renderList() {
+      const container = document.getElementById("itemList");
+      container.innerHTML = "";
+      itemList.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.textContent = (index + 1) + ". " + item.barcode + " – " + item.quantity + " db (" + item.raktaros + ", " + item.confirmCode + ")";
+        container.appendChild(div);
+      });
+    }
+
+    function finishPicking() {
+      if (itemList.length === 0) {
+        alert("Nincs összekészített tétel.");
+        return;
+      }
+      alert("Komissió sikeresen lezárva! ✅");
+      itemList.length = 0;
+      renderList();
+      currentCode = "";
+      document.getElementById("confirmCode").value = "";
+      document.getElementById("confirmCode").readOnly = false;
+      document.getElementById("barcodeInput").disabled = true;
+      document.getElementById("quantity").disabled = true;
+      document.getElementById("addBtn").disabled = true;
+      document.getElementById("finishBtn").disabled = true;
+    }
+  </script>
+</body>
+</html>
