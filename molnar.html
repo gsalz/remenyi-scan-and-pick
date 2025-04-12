@@ -93,6 +93,13 @@
       margin-bottom: 0.7rem;
       font-size: 0.95rem;
     }
+    .confirmation {
+      text-align: center;
+      margin-top: 2rem;
+      font-weight: bold;
+      color: #008800;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -117,10 +124,11 @@
     <div class="item-list" id="itemList"></div>
 
     <button class="btn" onclick="finishPicking()" disabled id="finishBtn">Komissió lezárása</button>
+
+    <div class="confirmation" id="confirmation"></div>
   </div>
 
   <script>
-    const raktaros = "Molnár Attila";
     const itemList = [];
     let currentCode = "";
 
@@ -159,7 +167,7 @@
       if (existing) {
         existing.quantity += quantity;
       } else {
-        itemList.push({ raktaros, confirmCode: currentCode, barcode, quantity });
+        itemList.push({ confirmCode: currentCode, barcode, quantity });
       }
 
       renderList();
@@ -174,7 +182,7 @@
       itemList.forEach((item, index) => {
         const div = document.createElement("div");
         div.className = "item";
-        div.textContent = (index + 1) + ". " + item.barcode + " – " + item.quantity + " db (" + item.raktaros + ", " + item.confirmCode + ")";
+        div.textContent = (index + 1) + ". " + item.barcode + " – " + item.quantity + " db";
         container.appendChild(div);
       });
     }
@@ -184,7 +192,9 @@
         alert("Nincs összekészített tétel.");
         return;
       }
-      alert("Komissió sikeresen lezárva! ✅");
+      const confirmation = document.getElementById("confirmation");
+      confirmation.innerHTML = "✅ Komissió lezárva<br>📦 Visszaigazolás: <strong>" + currentCode + "</strong>";
+
       itemList.length = 0;
       renderList();
       currentCode = "";
