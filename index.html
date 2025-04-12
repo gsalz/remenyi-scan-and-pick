@@ -2,84 +2,86 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Reményi Scan & Pick</title>
   <link rel="manifest" href="manifest.json">
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
+  <link rel="icon" type="image/png" href="icon-192.png"/>
   <style>
     * {
       box-sizing: border-box;
     }
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f7f7f7;
-      color: #222;
+      background-color: #f4f4f4;
+      color: #333;
     }
     header {
-      background-color: #fff;
+      background: #fff;
       padding: 1rem;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     header img {
-      height: 50px;
+      height: 60px;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #c00000;
     }
     .container {
       max-width: 500px;
-      margin: auto;
-      padding: 2rem 1rem;
-    }
-    h1 {
-      text-align: center;
-      color: #d10000;
-      font-size: 1.8rem;
-      margin-top: 0.5rem;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     label {
-      font-weight: 600;
+      font-weight: bold;
+      margin-top: 1rem;
       display: block;
-      margin-top: 1.5rem;
-      margin-bottom: 0.5rem;
     }
     input[type="text"],
     input[type="number"] {
       width: 100%;
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    button {
-      width: 100%;
-      padding: 0.9rem;
-      margin-top: 1.5rem;
+      padding: 0.8rem;
+      margin-top: 0.3rem;
       font-size: 1.1rem;
-      background-color: #d10000;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    button:hover {
-      background-color: #a70000;
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1.2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #d10000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+    .btn:hover {
+      background: #a00000;
     }
     .item-list {
       margin-top: 2rem;
     }
     .item {
-      background-color: #fff;
-      border: 1px solid #ddd;
+      background: #fafafa;
       padding: 1rem;
+      margin-bottom: 0.8rem;
+      border-left: 5px solid #d10000;
       border-radius: 6px;
-      margin-bottom: 1rem;
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
     .footer-img {
       text-align: center;
@@ -87,40 +89,25 @@
     }
     .footer-img img {
       width: 120px;
-      opacity: 0.8;
+      opacity: 0.85;
     }
   </style>
-</head>
-<body>
-  <header>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Rem%C3%A9nyi_logo_k%C3%B6r.png/240px-Rem%C3%A9nyi_logo_k%C3%B6r.png" alt="Reményi logó">
-    <h1>Scan & Pick</h1>
-  </header>
-
-  <div class="container">
-    <label for="barcodeInput">Szkennelt vonalkód:</label>
-    <input type="text" id="barcodeInput" placeholder="Szkennelt vonalkód..." autofocus>
-
-    <label for="quantity">Mennyiség:</label>
-    <input type="number" id="quantity" value="1" min="1">
-
-    <button onclick="addItem()">Hozzáadás a listához</button>
-
-    <div class="item-list" id="itemList"></div>
-
-    <button onclick="finishPicking()">Komissió lezárása</button>
-
-    <div class="footer-img">
-      <img src="https://i.imgur.com/Fh5n3eu.png" alt="Raklap + béka">
-    </div>
-  </div>
-
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('barcodeInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          addItem();
+        }
+      });
+    });
+
     const itemList = [];
 
     function addItem() {
-      const barcode = document.getElementById('barcodeInput').value.trim();
-      const quantity = parseInt(document.getElementById('quantity').value);
+      const barcodeInput = document.getElementById('barcodeInput');
+      const quantityInput = document.getElementById('quantity');
+      const barcode = barcodeInput.value.trim();
+      const quantity = parseInt(quantityInput.value);
 
       if (!barcode || quantity < 1) {
         alert('Kérlek adj meg érvényes vonalkódot és mennyiséget.');
@@ -130,19 +117,19 @@
       itemList.push({ barcode, quantity });
       renderList();
 
-      document.getElementById('barcodeInput').value = '';
-      document.getElementById('quantity').value = 1;
-      document.getElementById('barcodeInput').focus();
+      barcodeInput.value = '';
+      quantityInput.value = 1;
+      barcodeInput.focus();
     }
 
     function renderList() {
-      const container = document.getElementById('itemList');
-      container.innerHTML = '';
-      itemList.forEach((item, index) => {
+      const list = document.getElementById('itemList');
+      list.innerHTML = '';
+      itemList.forEach((item, i) => {
         const div = document.createElement('div');
         div.className = 'item';
-        div.textContent = `${index + 1}. ${item.barcode} – ${item.quantity} db`;
-        container.appendChild(div);
+        div.textContent = `${i + 1}. ${item.barcode} – ${item.quantity} db`;
+        list.appendChild(div);
       });
     }
 
@@ -156,5 +143,29 @@
       renderList();
     }
   </script>
+</head>
+<body>
+  <header>
+    <img src="icon-192.png" alt="Reményi logó" />
+    <h1>Scan & Pick</h1>
+  </header>
+
+  <div class="container">
+    <label for="barcodeInput">Szkennelt vonalkód:</label>
+    <input type="text" id="barcodeInput" placeholder="Szkennelt vonalkód..." autofocus />
+
+    <label for="quantity">Mennyiség:</label>
+    <input type="number" id="quantity" value="1" min="1" />
+
+    <button class="btn" onclick="addItem()">Hozzáadás a listához</button>
+
+    <div class="item-list" id="itemList"></div>
+
+    <button class="btn" onclick="finishPicking()">Komissió lezárása</button>
+
+    <div class="footer-img">
+      <img src="https://raw.githubusercontent.com/gsalz/remenyi-scan-and-pick/main/raklap.png" alt="Raklapos béka" />
+    </div>
+  </div>
 </body>
 </html>
