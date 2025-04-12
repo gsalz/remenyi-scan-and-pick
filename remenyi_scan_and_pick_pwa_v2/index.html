@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reményi Scan & Pick - Demo</title>
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #000;
+      margin: 0;
+      padding: 1rem;
+    }
+    header {
+      background-color: #fff;
+      border-bottom: 2px solid #ccc;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #d10000;
+    }
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      border-left: 5px solid #d10000;
+      padding-left: 0.5rem;
+    }
+    .scan-section, .list-section {
+      margin: 2rem auto;
+      max-width: 500px;
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      background-color: #d10000;
+      color: white;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #a60000;
+    }
+    .item-list {
+      margin-top: 1rem;
+    }
+    .item {
+      padding: 1rem;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Reményi Scan & Pick</div>
+  </header>
+
+  <section class="scan-section">
+    <h2>Vonalkód beolvasása</h2>
+    <label for="barcodeInput">Szkennelt vonalkód:</label>
+    <input type="text" id="barcodeInput" placeholder="Szkennelt vonalkód..." autofocus>
+    <label for="quantity">Mennyiség:</label>
+    <input type="number" id="quantity" value="1" min="1">
+    <button class="btn" onclick="addItem()">Hozzáadás a listához</button>
+  </section>
+
+  <section class="list-section">
+    <h2>Komissiózott tételek</h2>
+    <div id="itemList" class="item-list"></div>
+    <button class="btn" onclick="finishPicking()">Komissió lezárása</button>
+  </section>
+
+  <script>
+    const itemList = [];
+
+    function addItem() {
+      const barcode = document.getElementById('barcodeInput').value.trim();
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      if (!barcode || quantity < 1) {
+        alert('Kérlek adj meg érvényes vonalkódot és mennyiséget.');
+        return;
+      }
+
+      itemList.push({ barcode, quantity });
+      renderList();
+
+      document.getElementById('barcodeInput').value = '';
+      document.getElementById('quantity').value = 1;
+      document.getElementById('barcodeInput').focus();
+    }
+
+    function renderList() {
+      const container = document.getElementById('itemList');
+      container.innerHTML = '';
+      itemList.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.textContent = `${index + 1}. ${item.barcode} – ${item.quantity} db`;
+        container.appendChild(div);
+      });
+    }
+
+    function finishPicking() {
+      if (itemList.length === 0) {
+        alert('Nincs összekészített tétel.');
+        return;
+      }
+      alert('Komissió sikeresen lezárva! ✅');
+      itemList.length = 0;
+      renderList();
+    }
+  </script>
+</body>
+</html>
