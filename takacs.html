@@ -8,81 +8,98 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-192.png" />
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
-      background: #f4f4f4;
+      background: #f0f2f5;
       color: #333;
     }
     header {
-      background: #fff;
+      background: white;
       text-align: center;
-      padding: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem 1rem 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     header img {
       height: 60px;
     }
     h1 {
       margin: 0.5rem 0 0;
-      color: #c00000;
+      font-size: 1.8rem;
+      color: #b00000;
+    }
+    h2 {
+      margin-top: 0.2rem;
+      font-size: 1.1rem;
+      font-weight: normal;
+      color: #666;
     }
     .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 480px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.05);
     }
     label {
-      font-weight: bold;
+      font-weight: 600;
       display: block;
       margin-top: 1rem;
+      margin-bottom: 0.25rem;
     }
     input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 0.7rem;
-      margin-top: 0.3rem;
+      padding: 0.75rem;
       font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid #ccc;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: #b00000;
     }
     input[readonly] {
-      background-color: #eee;
+      background-color: #f5f5f5;
     }
     .btn {
       display: block;
       width: 100%;
-      padding: 1rem;
-      margin-top: 1.2rem;
+      padding: 0.9rem;
+      margin-top: 1.5rem;
       font-size: 1.1rem;
+      font-weight: bold;
       background: #d10000;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
+      transition: background 0.3s;
     }
     .btn:hover {
       background: #a00000;
     }
     .item-list {
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
     .item {
-      background: #f9f9f9;
-      padding: 0.8rem;
-      border-left: 4px solid #d10000;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
+      background: #f8f8f8;
+      padding: 0.8rem 1rem;
+      border-left: 4px solid #b00000;
+      border-radius: 10px;
+      margin-bottom: 0.7rem;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
   <header>
     <img src="icon-192.png" alt="Reményi logó" />
-    <h1>Scan & Pick – Takács József</h1>
+    <h1>Scan & Pick</h1>
+    <h2>Takács József</h2>
   </header>
 
   <div class="container">
