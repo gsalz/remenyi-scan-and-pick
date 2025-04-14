@@ -1,11 +1,10 @@
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBqXYdVxxRfVUrwDsI2VlHQvpdhqr-oe9g",
-  authDomain: "remenyikeresztur.firebaseapp.com",
-  projectId: "remenyikeresztur",
-  storageBucket: "remenyikeresztur.firebasestorage.app",
-  messagingSenderId: "981331750744",
-  appId: "1:981331750744:web:d93439261f6c48a6c4bf2d",
-  measurementId: "G-CSQP9CS2QD"
+  apiKey: "AIzaSyAuUaqjunjgwU-9oSgWD8TXTPy6K38Dfw8",
+  authDomain: "remenyi-scan-and-pick.firebaseapp.com",
+  projectId: "remenyi-scan-and-pick",
+  storageBucket: "remenyi-scan-and-pick.firebasestorage.app",
+  messagingSenderId: "453229578027",
+  appId: "1:453229578027:web:0047b73ca326a57ca4a76e"
 };
 firebase.initializeApp(firebaseConfig);
