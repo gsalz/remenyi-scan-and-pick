@@ -1,1 +1,1 @@
-// dummy service worker
+// üres service worker
