@@ -1,1 +1,86 @@
-<html><body><h1>Admin oldal jön!</h1></body></html>
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – Komissiók</title>
+  <link rel="icon" href="icon-192.png" />
+  <style>
+    body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 1rem; }
+    h1 { text-align: center; color: #b00000; }
+    .entry { background: white; margin: 1rem auto; padding: 1rem; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.1); max-width: 600px; }
+    .header { font-weight: bold; margin-bottom: 0.5rem; display: flex; justify-content: space-between; cursor: pointer; }
+    .details { display: none; padding-top: 0.5rem; border-top: 1px solid #ddd; margin-top: 0.5rem; }
+    .item { margin: 0.25rem 0; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+</head>
+<body>
+  <h1>Komissiók – Admin</h1>
+  <div id="list"></div>
+
+  <script>
+    const db = firebase.firestore();
+    const list = document.getElementById("list");
+    const data = {};
+
+    function render() {
+      list.innerHTML = "";
+      Object.entries(data).forEach(([key, val]) => {
+        const entry = document.createElement("div");
+        entry.className = "entry";
+
+        const header = document.createElement("div");
+        header.className = "header";
+        header.innerHTML = `<span>${val.raktaros || "Raktáros"} – ${key}</span><span>➕</span>`;
+        header.onclick = () => {
+          details.style.display = details.style.display === "none" ? "block" : "none";
+        };
+
+        const details = document.createElement("div");
+        details.className = "details";
+        val.items.forEach(i => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.textContent = `${i.barcode} – ${i.quantity} db`;
+          details.appendChild(item);
+        });
+
+        entry.appendChild(header);
+        entry.appendChild(details);
+        list.appendChild(entry);
+      });
+    }
+
+    db.collection("komissiozas")
+      .orderBy("timestamp")
+      .onSnapshot(snapshot => {
+        dataClear();
+
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          if (!d.confirmCode || !d.raktaros) return;
+
+          if (!data[d.confirmCode]) {
+            data[d.confirmCode] = { raktaros: d.raktaros, items: [] };
+          }
+          const existing = data[d.confirmCode].items.find(i => i.barcode === d.barcode);
+          if (existing) {
+            existing.quantity += d.quantity;
+          } else {
+            data[d.confirmCode].items.push({ barcode: d.barcode, quantity: d.quantity });
+          }
+        });
+
+        render();
+      });
+
+    function dataClear() {
+      for (const key in data) delete data[key];
+    }
+  </script>
+</body>
+</html>
